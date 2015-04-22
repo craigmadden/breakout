@@ -35,13 +35,6 @@ class Paddle(object):
         self.rect.setFill("Green")
 
 
-        if pt.getY() <= paddle_y:
-            if pt.getX() >= paddle_lx and pt.getX() <= paddle_rx:
-                direction[1] = 5
-                return True
-
-        self.direction = direction
-
 class Ball(object):
     def __init__(self,x,y,r):
         self.circle = Circle(Point(x,y),r)
@@ -59,14 +52,6 @@ class Ball(object):
         rectx2 = rect.x + 15
         recty1 = rect.y - 10
         recty2 = rect.y + 10
-        if not (by2 < recty1 || by1 > )
-        #print bx1,bx2,by1,by2,rectx1,rectx2,recty1,recty2
-        # if bx1 >= rectx1 and bx1 <= rectx2:
-        #     if by1 >= recty1 and by1 <= recty2:
-        #         direction[1] = 5
-        #         return True
-        # elif bx2 >= rectx1 and bx2 <= rectx2:
-        #     if(by1 >= recty1 and by1 <= recty2) or (by2 >= recty1 and by2 <= recty2):
-        #         # Ball is inside rectangle
-        #         direction[1]=5
-        #         return True
+        if not (by2 < recty1 or by1 > recty2 or bx2 < rectx1 or bx1 > rectx2):
+            print "Collision!!!!!!"
+
