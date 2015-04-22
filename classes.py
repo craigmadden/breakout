@@ -7,7 +7,7 @@ class GameArea(object):
         self.bottom = 25
         self.top = 475
         self.rect = Rectangle(Point(25,25),Point(475,475))
-        self.rect.setFill("white")
+        self.rect.setFill("black")
 
     def collision_detection(self,pt, direction):
         if pt.getX() <= self.left:
@@ -34,6 +34,15 @@ class Paddle(object):
         self.rect = Rectangle(Point(150,30),Point(200,40))
         self.rect.setFill("Green")
 
+class Brick(object):
+    def __init__(self,x,y,color):
+        self.width = 40
+        self.height = 10
+        self.x = x
+        self.y = y
+        self.rect = Rectangle(Point(x-20,y-5),Point(x+20,y+5))
+        self.rect.setFill(color)
+
 
 class Ball(object):
     def __init__(self,x,y,r):
@@ -53,5 +62,6 @@ class Ball(object):
         recty1 = rect.y - 10
         recty2 = rect.y + 10
         if not (by2 < recty1 or by1 > recty2 or bx2 < rectx1 or bx1 > rectx2):
-            print "Collision!!!!!!"
+            direction[1] *= -1
+            return True
 
