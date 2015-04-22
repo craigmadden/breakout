@@ -34,10 +34,6 @@ class Paddle(object):
         self.rect = Rectangle(Point(150,30),Point(200,40))
         self.rect.setFill("Green")
 
-    def collision_detect(self,pt, paddle_pt, direction):
-        paddle_lx = paddle_pt.getX()
-        paddle_rx = paddle_pt.getX() + 40
-        paddle_y = paddle_pt.getY() + 10
 
         if pt.getY() <= paddle_y:
             if pt.getX() >= paddle_lx and pt.getX() <= paddle_rx:
