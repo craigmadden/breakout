@@ -1,5 +1,7 @@
 from graphics import *
 
+BALL_SPEED = 1
+
 class GameArea(object):
     def __init__(self):
         self.left = 25
@@ -22,17 +24,30 @@ class GameArea(object):
         elif pt.getY() <= self.bottom:
             direction[1] = 5
             return True
-        self.direction = direction
+
 
 
 class Paddle(object):
     def __init__(self):
         self.width = 40
         self.height = 10
-        self.x = 150
+
+        # X and Y are the lower left of paddle and starting position
+        self.x = 250
         self.y = 30
-        self.rect = Rectangle(Point(150,30),Point(200,40))
+        self.left = self.x - 20
+        self.right = self.x + 20
+        self.top = self.y + self.height
+        self.rect = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
         self.rect.setFill("Green")
+
+    def move(self, x, y=0):
+        # Move paddle to new position and update the current location of the paddle
+        self.rect.move(x, y)
+        self.x += x
+        self.y += y
+        self.left = self.x - 20
+        self.right = self.x + 20
 
 class Brick(object):
     def __init__(self,x,y,color):
@@ -40,19 +55,45 @@ class Brick(object):
         self.height = 10
         self.x = x
         self.y = y
-        self.rect = Rectangle(Point(x-20,y-5),Point(x+20,y+5))
+        self.rect = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
         self.rect.setFill(color)
 
 
 class Ball(object):
-    def __init__(self,x,y,r):
-        self.circle = Circle(Point(x,y),r)
+    def __init__(self, x, y, radius):
+        self.circle = Circle(Point(x, y), radius)
         self.circle.setFill("blue")
+
+        # X and Y is the center of the ball
         self.x = x
         self.y = y
+        self.radius = radius
         # Create a hit box that consists of the four corners
 
-    def collision_dect(self,rect,direction):
+    def move(self, x, y):
+        # Move ball to new position and update the current location
+        self.circle.move(x, y)
+        self.x += x
+        self.y += y
+
+    def hits_paddle(self,paddle, direction):
+        # Bottom of ball is self.y - self.radius
+        if (self.y - self.radius) <= paddle.top and self.x > paddle.left and self.x < paddle.right:
+            direction[1] *= -1
+
+    def is_below_paddle(self, paddle):
+        # The bottom of the ball is self.y - self.radius
+        return (self.y - self.radius) < paddle.top
+
+    def hits_wall(self, gamearea, direction):
+        if (self.x - self.radius) <= gamearea.left:
+            direction[0] = BALL_SPEED
+        elif (self.x + self.radius) >= gamearea.right:
+            direction[0] = -BALL_SPEED
+        elif (self.y + self.radius) >= gamearea.top:
+            direction[1] = -BALL_SPEED
+
+    def collision_dect(self, rect, direction):
         bx1 = self.x - 2
         bx2 = self.x + 2
         by1 = self.y - 2
