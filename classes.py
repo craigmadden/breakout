@@ -25,8 +25,6 @@ class GameArea(object):
             direction[1] = 5
             return True
 
-
-
 class Paddle(object):
     def __init__(self):
         self.width = 40
@@ -55,9 +53,11 @@ class Brick(object):
         self.height = 10
         self.x = x
         self.y = y
+        self.top = self.y + 10
+        self.left = self.x - 20
+        self.right = self.x + 20
         self.rect = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
         self.rect.setFill(color)
-
 
 class Ball(object):
     def __init__(self, x, y, radius):
@@ -76,10 +76,17 @@ class Ball(object):
         self.x += x
         self.y += y
 
-    def hits_paddle(self,paddle, direction):
+    def hits_paddle(self, paddle, direction):
         # Bottom of ball is self.y - self.radius
-        if (self.y - self.radius) <= paddle.top and self.x > paddle.left and self.x < paddle.right:
+        if (self.y - self.radius) <= paddle.top and (self.x - 23) > paddle.left and (self.x - 23) < paddle.right:
+            print self.x, paddle.left, paddle.right
             direction[1] *= -1
+
+    def hits_brick(self, brick, direction, bricks, item):
+        if not ((self.y + self.radius) < brick.y or (self.y - self.radius) > brick.top or (self.x + self.radius) < brick.left or (self.x - self.radius) > brick.right):
+            direction[1] *= -1
+            bricks.pop(item)
+            brick.rect.undraw()
 
     def is_below_paddle(self, paddle):
         # The bottom of the ball is self.y - self.radius
@@ -92,17 +99,3 @@ class Ball(object):
             direction[0] = -BALL_SPEED
         elif (self.y + self.radius) >= gamearea.top:
             direction[1] = -BALL_SPEED
-
-    def collision_dect(self, rect, direction):
-        bx1 = self.x - 2
-        bx2 = self.x + 2
-        by1 = self.y - 2
-        by2 = self.y + 2
-        rectx1 = rect.x - 15
-        rectx2 = rect.x + 15
-        recty1 = rect.y - 10
-        recty2 = rect.y + 10
-        if not (by2 < recty1 or by1 > recty2 or bx2 < rectx1 or bx1 > rectx2):
-            direction[1] *= -1
-            return True
-

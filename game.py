@@ -10,16 +10,11 @@ class GameApp(object):
         self.win.setCoords(0, 0, 500, 500)
         # Create circle (ball x, y and radius)
         self.x = 50
-        self.y = 350
+        self.y = 300
 
         # Initialize game area
         self.gamearea = GameArea()
         self.gamearea.rect.draw(self.win)
-
-
-        self.ball = Ball(self.x, self.y, 8)
-        self.ball.circle.draw(self.win)
-        # Starting point of ball
 
     def reset(self):
         self.ball.circle.undraw()
@@ -28,7 +23,7 @@ class GameApp(object):
         self.ball.circle.draw(self.win)
         # Starting point of ball
         self.x = 50
-        self.y = 350
+        self.y = 300
 
     def main(self):
         # Create bricks
@@ -49,41 +44,25 @@ class GameApp(object):
         paddle = Paddle()
 
         paddle.rect.draw(self.win)
-        # Use a similar process for creating bricks
 
         # Create circle (ball x, y and radius)
         self.ball = Ball(self.x, self.y, 8)
         self.ball.circle.draw(self.win)
 
-        left = 30
-        right = 470
-        top = 470
-        bottom = 30
         # The direction values determine amount of movement of ball
         direction = [BALL_SPEED, BALL_SPEED]
         while True:
-            ball_pt = self.ball.circle.getCenter()
-            paddle_pt = paddle.rect.getCenter()
             if self.ball.is_below_paddle(paddle):
                 self.reset()
             self.ball.hits_wall(self.gamearea, direction)
 
             self.ball.hits_paddle(paddle, direction)
 
-            # if self.ball.collision_dect(paddle, direction):
-            #     print "Hit paddle"
-            for item,brick in enumerate(bricks):
-                if self.ball.collision_dect(brick, direction):
-                    bricks.pop(item)
-                    brick.rect.undraw()
-                    if not bricks:
-                        print "ALL BRICKS ARE GONE"
-
-            x = direction[0]
-            y = direction[1]
+            for item, brick in enumerate(bricks):
+                self.ball.hits_brick(brick, direction, bricks, item)
 
             # Move ball to new location
-            self.ball.move(x, y)
+            self.ball.move(direction[0], direction[1])
 
             # Check for mouse click on play area
             if self.win.checkMouse(): # pause for click in window
@@ -93,10 +72,9 @@ class GameApp(object):
                 paddle.move(-10)
             elif user_event == "Right":
                 paddle.move(10)
-            # # Get the bottom left point of rectangle (P1)
-            # paddle_pt = paddle.rect.getP1()
+
             # Wait for next loop
-            time.sleep(.005)
+            time.sleep(.003)
 
         win.close()
 
